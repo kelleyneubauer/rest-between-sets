@@ -1,0 +1,157 @@
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/examples/datastoreid'
+        user_email:
+          $ref: '#/components/examples/email'
+        user_id:
+          $ref: '#/components/examples/jwtsub'
+        creted_at:
+          $ref: '#/components/examples/datetime'
+    Exercises:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/examples/datastoreid'
+        exercise_name:
+          $ref: '#/components/examples/name'
+        video_links:
+          type: array
+          items:
+            $ref: '#/components/examples/url'
+        reference_links:
+          type: array
+          items:
+            $ref: '#/components/examples/url'
+        movements:
+          type: array
+          items:
+            $ref: '#/components/examples/datastoreid'
+        created_by:
+          $ref: '#/components/examples/jwtsub'
+        created_at:
+          $ref: '#/components/examples/datetime'
+    Movements:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/examples/datastoreid'
+        movement_name:
+          $ref: '#/components/examples/name'
+        coaching_tips:
+          $ref: '#/components/examples/text'
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/examples/datastoreid'
+        created_by:
+          $ref: '#/components/examples/jwtsub'
+        created_at:
+          $ref: '#/components/examples/datetime'
+  # Reusable path, query, header and cookie parameters
+  parameters:
+  # Security scheme definitions (see Authentication)
+  securitySchemes:
+  # Reusable request bodies
+  requestBodies:
+    movement:
+      type: object
+      properties:
+        movement_name:
+          $ref: '#/components/examples/name'
+        coaching_tips:
+          $ref: '#/components/examples/text'
+  # Reusable responses, such as 401 Unauthorized or 400 Bad Request
+  responses:
+    self:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/examples/self'
+    401:
+      description: Unauthorized Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Invalid Token
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Forbidden
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Not Found
+    406:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Not Acceptable
+    415:
+      description: Unsupported Media Type
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Unsupported Media Type
+  # Reusable response headers
+  headers:
+  # Reusable examples
+  examples:
+    email: 
+      type: string
+      example: email@domain.com
+    name: 
+      type: string
+      example: name
+    url: 
+      type: string
+      example: http://www.website.com
+    text:
+      type: string
+      example: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    jwtsub:
+      type: string
+      example: auth0|123dacfecd06b80069190ff9
+    datetime:
+      type: DateTime
+      example: 2022-06-04T20:44:26.817Z
+    datastoreid:
+      type: integer
+      example: 12345
+    self:
+      type: string
+      example: 'http://www.api.com/canonical-resource-location'
+      description: 'Canonical resource URL'
+
+  # Reusable links
+  links:
+  # Reusable callbacks
+  callbacks:
