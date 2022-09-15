@@ -151,12 +151,8 @@ router.get('/', async function(req, res) {
  * GET /api/users
  * 
  * Get all registered users
- * 
- * @swagger
- * /users:
- *   $ref: '#/paths/~1users'
  */
-router.get('/users', async function(req, res) {
+router.get('/users', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else {
@@ -187,10 +183,6 @@ router.post('/users', function(req, res) {
  * 
  * Add a movement with auth
  * 
- * @swagger
- * /movements:
- *   post:
- *     $ref: '#/paths/~1movements/post'
  */
  router.post('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -221,10 +213,6 @@ router.post('/users', function(req, res) {
  * 
  * Get all movements for authenticated user
  * 
- * @swagger
- * /movements:
- *   get:
- *     $ref: '#/paths/~1movements/get'
  */
  router.get('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -276,10 +264,6 @@ router.post('/users', function(req, res) {
  * 
  * Retrieve a movement
  * 
- * @swagger
- * /movements/{movement_id}:
- *   get:
- *     $ref: '#/paths/~1movements/~1{movement_id}/get'
  */
   
  router.get('/movements/:movement_id', checkJwt, async function(req, res) {
@@ -316,10 +300,6 @@ router.post('/users', function(req, res) {
  * 
  * Edit a movement
  * 
- * @swagger
- * /movements/{movement_id}:
- *   put:
- *     $ref: '#/paths/~1movements/~1{movement_id}/put'
  */
 router.put('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -365,10 +345,6 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
  * 
  * Edit a movement
  * 
- * @swagger
- * /movements/{movement_id}:
- *   patch:
- *     $ref: '#/paths/~1movements/~1{movement_id}/patch'
  */
  router.patch('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -408,6 +384,7 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
  * DELETE api/movements/:id
  * 
  * Delete a movement
+ * 
  */
 router.delete('/movements/:movement_id', checkJwt, async function(req, res) {
     try {

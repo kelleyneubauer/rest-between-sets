@@ -62,21 +62,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    # OAuth2:
-    #     type: oauth2
-    #     flows:
-    #       authorizationCode:
-    #         authorizationUrl: https://example.com/oauth/authorize
-    #         tokenUrl: https://example.com/oauth/token
-    #         scopes:
-    #           read: Grants read access
-    #           write: Grants write access
-    #           admin: Grants access to admin operations
-    # Authorization:
-    #   name: Authorization
-    #   type: string
-    #   in: header
-    #   required: true
 ################################################################################
   # Reusable request bodies
   requestBodies:
@@ -87,6 +72,19 @@ components:
           $ref: '#/components/examples/name'
         coaching_tips:
           $ref: '#/components/examples/text'
+    exercise:
+      type: object
+      properties:
+        exercise_name:
+          $ref: '#/components/examples/name'
+        video_links:
+          type: array
+          items:
+            $ref: '#/components/examples/url'
+        reference_links:
+          type: array
+          items:
+            $ref: '#/components/examples/url'
 ################################################################################
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:
@@ -95,66 +93,20 @@ components:
       properties:
         self:
           $ref: '#/components/examples/self'
+    204:
+      description: No Content
     400:
       description: Bad Request
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Bad Request
     401:
       description: Unauthorized Error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Invalid Token
     403:
       description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Forbidden
     404:
       description: Not Found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Not Found
     406:
       description: Not Acceptable
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Not Acceptable
     415:
       description: Unsupported Media Type
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Error: 
-                type: string
-                example: Unsupported Media Type
 ################################################################################
   # Reusable response headers
   headers:
@@ -184,7 +136,7 @@ components:
       example: 12345
     integer:
       type: integer
-      example: 4
+      example: 1
     self:
       type: string
       example: 'http://www.api.com/canonical-resource-location'

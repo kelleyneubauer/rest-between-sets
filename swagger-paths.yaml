@@ -5,6 +5,8 @@ paths:
     get:
       description: Gets all registered users
       tags: [Users]
+      security:
+        - BearerAuth: []
       produces:
         - application/json
       responses:
@@ -20,6 +22,39 @@ paths:
           $ref: '#/components/responses/406'
 ################################################################################
   /movements:
+################################################################################
+    get:
+      description: Get all movements created by the authenticated user
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK. Response uses pagination with 5 results per page. If there are more results, a "next" property is included in the response with a link to the next page. 
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - movements
+                  - count 
+                properties:
+                  movements:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/Movements'
+                      - $ref: '#/components/responses/self'
+                  count:
+                    $ref: '#/components/examples/integer'
+                  next:
+                    $ref: '#/components/examples/next'
+        401:
+          $ref: '#/components/responses/401'
+        406:
+          $ref: '#/components/responses/406'
 ################################################################################
     post:
       description: Add a movement to the database
@@ -52,39 +87,6 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
-    get:
-      description: Get all movements for authenticated user
-      tags: [Movements]
-      security:
-        - BearerAuth: []
-      produces:
-        - application/json
-      responses:
-        200:
-          description: OK. Response uses pagination with 5 results per page. If there are more results, a "next" property is included in the response with a link to the next page. 
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - movements
-                  - count 
-                properties:
-                  movements:
-                    type: array
-                    items:
-                      allOf:
-                      - $ref: '#/components/schemas/Movements'
-                      - $ref: '#/components/responses/self'
-                  count:
-                    $ref: '#/components/examples/integer'
-                  next:
-                    $ref: '#/components/examples/next'
-        401:
-          $ref: '#/components/responses/401'
-        406:
-          $ref: '#/components/responses/406'
 ################################################################################
   /movements/{movement_id}:
 ################################################################################
@@ -119,7 +121,7 @@ paths:
           $ref: '#/components/responses/406'
 ################################################################################
     put:
-      description: Edit a movement
+      description: Edit a movement - all properties required
       tags: [Movements]
       security:
         - BearerAuth: []
@@ -150,6 +152,8 @@ paths:
                 allOf:
                 - $ref: '#/components/schemas/Movements'
                 - $ref: '#/components/responses/self'
+        400:
+          $ref: '#/components/responses/400'
         401:
           $ref: '#/components/responses/401'
         403:
@@ -177,8 +181,7 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-              - $ref: '#/components/requestBodies/movement'
+              $ref: '#/components/requestBodies/movement'
       produces:
         - application/json
       responses:
@@ -203,3 +206,300 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
+################################################################################
+    delete:
+      description: Edit a movement
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+      produces:
+        - application/json
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+
+################################################################################
+  /movements/{movement_id}/exercises/{exercise_id}:
+################################################################################
+    put:
+      description: Add an exercise to a movement type
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      produces:
+        - application/json
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+################################################################################
+    delete:
+      description: Remove an exercise from a movement type association
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      produces:
+        - application/json
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+################################################################################
+  /exercises:
+################################################################################
+    get:
+      description: Get all exercises created by the authenticated user
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK. Response uses pagination with 5 results per page. If there are more results, a "next" property is included in the response with a link to the next page. 
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - exercises
+                  - count 
+                properties:
+                  exercises:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/Exercises'
+                      - $ref: '#/components/responses/self'
+                  count:
+                    $ref: '#/components/examples/integer'
+                  next:
+                    $ref: '#/components/examples/next'
+        401:
+          $ref: '#/components/responses/401'
+        406:
+          $ref: '#/components/responses/406'
+################################################################################
+    post:
+      description: Add an exercise to the database
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/movement'
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Exercises'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'
+################################################################################
+  /exercises/{exercise_id}:
+################################################################################
+    get:
+      description: Get an exercise by ID
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Exercises'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        406:
+          $ref: '#/components/responses/406'
+################################################################################
+    put:
+      description: Edit an exercise - all properties required
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/exercise'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Exercises'
+                - $ref: '#/components/responses/self'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'
+################################################################################
+    patch:
+      description: Edit an exercise
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/exercise'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Exercises'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'
+################################################################################
+    delete:
+      description: Edit an exercise
+      tags: [Exercises]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: exercise_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the exercise
+      produces:
+        - application/json
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
