@@ -1,0 +1,205 @@
+paths:
+################################################################################
+  /users:
+################################################################################
+    get:
+      description: Gets all registered users
+      tags: [Users]
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Users'
+        406:
+          $ref: '#/components/responses/406'
+################################################################################
+  /movements:
+################################################################################
+    post:
+      description: Add a movement to the database
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/movement'
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Movements'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'
+################################################################################
+    get:
+      description: Get all movements for authenticated user
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK. Response uses pagination with 5 results per page. If there are more results, a "next" property is included in the response with a link to the next page. 
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - movements
+                  - count 
+                properties:
+                  movements:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/Movements'
+                      - $ref: '#/components/responses/self'
+                  count:
+                    $ref: '#/components/examples/integer'
+                  next:
+                    $ref: '#/components/examples/next'
+        401:
+          $ref: '#/components/responses/401'
+        406:
+          $ref: '#/components/responses/406'
+################################################################################
+  /movements/{movement_id}:
+################################################################################
+    get:
+      description: Get a movement by ID
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Movements'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        406:
+          $ref: '#/components/responses/406'
+################################################################################
+    put:
+      description: Edit a movement
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/movement'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Movements'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'
+################################################################################
+    patch:
+      description: Edit a movement
+      tags: [Movements]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: movement_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the movement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/requestBodies/movement'
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          headers:
+            Location:
+              $ref: '#/components/examples/self'
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Movements'
+                - $ref: '#/components/responses/self'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        406:
+          $ref: '#/components/responses/406'
+        415:
+          $ref: '#/components/responses/415'

@@ -54,17 +54,20 @@ const swaggerOptions = {
     info: {
       title: 'REST Between Sets API',
       version: '1.0.0',
-      description: 'A RESTful API for managing an exercise database'
+      description: `A RESTful API for managing an exercise database`
     },
     servers: [
         {
           url: 'http://localhost:8080',
           description: 'Development server',
         },
+        {
+            url: 'http://www.prod.com',
+            description: 'Production server',
+        },
       ],
   },
-  apis: ['./*.js', './components.yaml'], // files containing annotations as above
-//   apis: ['./*.js'], // files containing annotations as above
+  apis: ['./*.js', './swagger-components.yaml', './swagger-paths.yaml'], // files containing annotations as above
 };
 const openapiSpecification = swaggerJsdoc(swaggerOptions);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
@@ -135,33 +138,24 @@ router.get('/', async function(req, res) {
         res
         .status(200)
         .render('home', {
-            title_text: "Welcome to Kelley's Exercise Database API!",
+            title_text: "REST Between Sets",
+            text: "Sign in to get your JWT and access the API",
             url_text: "Login",
             url: `${url}/login`
         });
     }
 });
 
-  /**
-   * @swagger
-   * /users:
-   *   get:
-   *     description: Gets all registered users
-   *     tags: [Users]
-   *     produces:
-   *       - application/json
-   *     responses:
-   *       200:
-   *         description: OK
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: array
-   *               items:
-   *                 $ref: '#/components/schemas/Users'
-   *       406:
-   *         $ref: '#/components/responses/406'
-   */
+
+/**
+ * GET /api/users
+ * 
+ * Get all registered users
+ * 
+ * @swagger
+ * /users:
+ *   $ref: '#/paths/~1users'
+ */
 router.get('/users', async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
@@ -188,39 +182,16 @@ router.post('/users', function(req, res) {
 });
 
 
- /**
-   * @swagger
-   * /movements:
-   *   post:
-   *     description: Gets all registered users
-   *     tags: [Movements]
-   *     produces:
-   *       - application/json
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/requestBodies/movement'
-   *     responses:
-   *       201:
-   *         description: Created
-   *         headers:
-   *           Location:
-   *             $ref: '#/components/examples/self'
-   *         content:
-   *           application/json:
-   *             schema:
-   *               allOf:
-   *               - $ref: '#/components/schemas/Movements'
-   *               - $ref: '#/components/responses/self'
-   *       401:
-   *         $ref: '#/components/responses/401'
-   *       406:
-   *         $ref: '#/components/responses/406'
-   *       415:
-   *         $ref: '#/components/responses/415'
-   */
+/**
+ * POST /api/movements
+ * 
+ * Add a movement with auth
+ * 
+ * @swagger
+ * /movements:
+ *   post:
+ *     $ref: '#/paths/~1movements/post'
+ */
  router.post('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
@@ -249,6 +220,11 @@ router.post('/users', function(req, res) {
  * GET /api/movements
  * 
  * Get all movements for authenticated user
+ * 
+ * @swagger
+ * /movements:
+ *   get:
+ *     $ref: '#/paths/~1movements/get'
  */
  router.get('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -299,7 +275,13 @@ router.post('/users', function(req, res) {
  * GET api/movements/:id
  * 
  * Retrieve a movement
+ * 
+ * @swagger
+ * /movements/{movement_id}:
+ *   get:
+ *     $ref: '#/paths/~1movements/~1{movement_id}/get'
  */
+  
  router.get('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
@@ -333,6 +315,11 @@ router.post('/users', function(req, res) {
  * PUT api/movements/:id
  * 
  * Edit a movement
+ * 
+ * @swagger
+ * /movements/{movement_id}:
+ *   put:
+ *     $ref: '#/paths/~1movements/~1{movement_id}/put'
  */
 router.put('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -341,6 +328,9 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
         res.status(415).json({ Error: 'Unsupported Media Type' });
     } else {
         try {
+            if (Object.keys(req.body).length !== 2 || !('movement_name' in req.body && 'coaching_tips' in req.body)) {
+                throw new Error('Bad Request');
+            }
             const movementId = parseInt(req.params.movement_id);
             const movement = await model.getMovement(movementId);
             if (movement.created_by !== req.auth.sub) {
@@ -355,7 +345,9 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
             res.location(movement.self);
             res.status(200).json(movement);
         } catch(err) {
-            if (err.message === 'Not Authorized') { 
+            if (err.message === 'Bad Request') {
+                res.status(400).json({ Error: 'Bad Request' });
+            } else if (err.message === 'Not Authorized') { 
                 res.status(403).json({ Error: 'Forbidden' });
             } else if (err.message === 'Not Found' || err.message === '3 INVALID_ARGUMENT: Key path id is invalid. Must not be zero.') {
                 res.status(404).json({ Error: 'Not Found' });
@@ -372,6 +364,11 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
  * PATCH api/movements/:id
  * 
  * Edit a movement
+ * 
+ * @swagger
+ * /movements/{movement_id}:
+ *   patch:
+ *     $ref: '#/paths/~1movements/~1{movement_id}/patch'
  */
  router.patch('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
@@ -638,6 +635,9 @@ router.get('/exercises', checkJwt, async function(req, res) {
         res.status(415).json({ Error: 'Unsupported Media Type' });
     } else {
         try {
+            if (Object.keys(req.body).length !== 3 || !('exercise_name' in req.body && 'video_links' in req.body && 'rerference_links' in req.body)) {
+                throw new Error('Bad Request');
+            }
             const exerciseId = parseInt(req.params.exercise_id);
             const exercise = await model.getExercise(exerciseId);
             if (exercise.created_by !== req.auth.sub) {
@@ -652,7 +652,9 @@ router.get('/exercises', checkJwt, async function(req, res) {
             res.location(exercise.self);
             res.status(200).json(exercise);
         } catch(err) {
-            if (err.message === 'Not Authorized') { 
+            if (err.message === 'Bad Request') {
+                res.status(400).json({ Error: 'Bad Request' });
+            } else if (err.message === 'Not Authorized') { 
                 res.status(403).json({ Error: 'Forbidden' });
             } else if (err.message === 'Not Found' || err.message === '3 INVALID_ARGUMENT: Key path id is invalid. Must not be zero.') {
                 res.status(404).json({ Error: 'Not Found' });

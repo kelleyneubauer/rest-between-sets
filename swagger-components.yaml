@@ -1,4 +1,5 @@
 components:
+################################################################################
   schemas:
     Users:
       type: object
@@ -51,10 +52,32 @@ components:
           $ref: '#/components/examples/jwtsub'
         created_at:
           $ref: '#/components/examples/datetime'
+################################################################################
   # Reusable path, query, header and cookie parameters
   parameters:
+################################################################################
   # Security scheme definitions (see Authentication)
   securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    # OAuth2:
+    #     type: oauth2
+    #     flows:
+    #       authorizationCode:
+    #         authorizationUrl: https://example.com/oauth/authorize
+    #         tokenUrl: https://example.com/oauth/token
+    #         scopes:
+    #           read: Grants read access
+    #           write: Grants write access
+    #           admin: Grants access to admin operations
+    # Authorization:
+    #   name: Authorization
+    #   type: string
+    #   in: header
+    #   required: true
+################################################################################
   # Reusable request bodies
   requestBodies:
     movement:
@@ -64,6 +87,7 @@ components:
           $ref: '#/components/examples/name'
         coaching_tips:
           $ref: '#/components/examples/text'
+################################################################################
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:
     self:
@@ -71,6 +95,16 @@ components:
       properties:
         self:
           $ref: '#/components/examples/self'
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Error: 
+                type: string
+                example: Bad Request
     401:
       description: Unauthorized Error
       content:
@@ -121,8 +155,10 @@ components:
               Error: 
                 type: string
                 example: Unsupported Media Type
+################################################################################
   # Reusable response headers
   headers:
+################################################################################
   # Reusable examples
   examples:
     email: 
@@ -146,12 +182,22 @@ components:
     datastoreid:
       type: integer
       example: 12345
+    integer:
+      type: integer
+      example: 4
     self:
       type: string
       example: 'http://www.api.com/canonical-resource-location'
       description: 'Canonical resource URL'
+    next:
+      type: string
+      example: 'http://www.api.com/next-page'
+      description: 'Link to next page of results'
 
+################################################################################
   # Reusable links
   links:
+
+################################################################################
   # Reusable callbacks
   callbacks:
