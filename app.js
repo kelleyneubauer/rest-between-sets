@@ -265,7 +265,6 @@ router.post('/users', function(req, res) {
  * Retrieve a movement
  * 
  */
-  
  router.get('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
