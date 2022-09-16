@@ -2,12 +2,11 @@
  * model.js
  * 
  * Kelley Neubauer - kelley@kelleyneubauer.com
- * 
  */
 
 'use strict';
 
-const constants = require('./constants');
+const constants = require('../constants');
 const { Datastore } = require('@google-cloud/datastore');
 const { UsersManager } = require('auth0');
 const datastore = new Datastore();

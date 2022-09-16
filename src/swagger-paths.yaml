@@ -339,7 +339,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/requestBodies/movement'
+              $ref: '#/components/requestBodies/exercise'
       produces:
         - application/json
       responses:
