@@ -12,13 +12,12 @@ const { checkJwt } = require('../../config/checkJwt-config');
 const model = require('../models/model');
 const { getTimestamp, removeElement } = require('../service/helpers');
 
- 
 /**
  * POST /api/movements
  * 
  * Add a movement with auth
  */
- router.post('/movements', checkJwt, async function(req, res) {
+router.post('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else if (req.get('content-type') !== 'application/json') {
@@ -41,13 +40,12 @@ const { getTimestamp, removeElement } = require('../service/helpers');
     }
 });
 
-
 /**
  * GET /api/movements
  * 
  * Get all movements for authenticated user
  */
- router.get('/movements', checkJwt, async function(req, res) {
+router.get('/movements', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else {
@@ -96,7 +94,7 @@ const { getTimestamp, removeElement } = require('../service/helpers');
  * 
  * Retrieve a movement
  */
- router.get('/movements/:movement_id', checkJwt, async function(req, res) {
+router.get('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else {
@@ -172,7 +170,7 @@ router.put('/movements/:movement_id', checkJwt, async function(req, res) {
  * 
  * Edit a movement
  */
- router.patch('/movements/:movement_id', checkJwt, async function(req, res) {
+router.patch('/movements/:movement_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else if (req.get('content-type') !== 'application/json') {
@@ -277,7 +275,7 @@ router.put('/movements/:movement_id/exercises/:exercise_id', checkJwt, async fun
  * 
  * Remove an exercise from a movement category
  */
- router.delete('/movements/:movement_id/exercises/:exercise_id', checkJwt, async function(req, res) {
+router.delete('/movements/:movement_id/exercises/:exercise_id', checkJwt, async function(req, res) {
     try {
         const movementId = parseInt(req.params.movement_id);
         const exerciseId = parseInt(req.params.exercise_id);
@@ -309,4 +307,4 @@ router.put('/movements/:movement_id/exercises/:exercise_id', checkJwt, async fun
     }
 });
 
- module.exports = router;
+module.exports = router;

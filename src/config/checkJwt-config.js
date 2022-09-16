@@ -1,5 +1,12 @@
-// Validate JWT sent as Bearer Token
-// Adds auth to req
+/** 
+ * checkJwt-config.js
+ * 
+ * Kelley Neubauer - kelley@kelleyneubauer.com
+ * 
+ * Used as middleware to validate JWTs sent as bearer token
+ * Adds auth parameter to request body
+ */
+
 const { expressjwt: jwt } = require("express-jwt");
 const jwksRsa = require('jwks-rsa');
 

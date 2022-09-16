@@ -1,3 +1,11 @@
+/** 
+ * helper.js
+ * 
+ * Kelley Neubauer - kelley@kelleyneubauer.com
+ * 
+ * Helper functions
+ */
+
 function getTimestamp() {
     return new Date();
 }

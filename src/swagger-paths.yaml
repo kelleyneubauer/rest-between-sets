@@ -1,7 +1,10 @@
+# swagger-paths.yaml
+# Kelley Neubauer - kelley@kelleyneubauer.com
+
 paths:
-################################################################################
+# ------------------------------------------------------------------------------
   /users:
-################################################################################
+# ------------------------------------------------------------------------------
     get:
       description: Gets all registered users
       tags: [Users]
@@ -20,9 +23,9 @@ paths:
                   $ref: '#/components/schemas/Users'
         406:
           $ref: '#/components/responses/406'
-################################################################################
+# ------------------------------------------------------------------------------
   /movements:
-################################################################################
+# ------------------------------------------------------------------------------
     get:
       description: Get all movements created by the authenticated user
       tags: [Movements]
@@ -55,7 +58,6 @@ paths:
           $ref: '#/components/responses/401'
         406:
           $ref: '#/components/responses/406'
-################################################################################
     post:
       description: Add a movement to the database
       tags: [Movements]
@@ -74,7 +76,7 @@ paths:
           description: Created
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -87,21 +89,16 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
+# ------------------------------------------------------------------------------
   /movements/{movement_id}:
-################################################################################
+# ------------------------------------------------------------------------------
     get:
       description: Get a movement by ID
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
+        - $ref: '#/components/parameters/movement_id'
       produces:
         - application/json
       responses:
@@ -119,19 +116,13 @@ paths:
           $ref: '#/components/responses/403'
         406:
           $ref: '#/components/responses/406'
-################################################################################
     put:
       description: Edit a movement - all properties required
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
+        - $ref: '#/components/parameters/movement_id'
       requestBody:
         required: true
         content:
@@ -145,7 +136,7 @@ paths:
           description: OK
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -164,19 +155,13 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
     patch:
       description: Edit a movement
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
+        - $ref: '#/components/parameters/movement_id'
       requestBody:
         content:
           application/json:
@@ -189,7 +174,7 @@ paths:
           description: OK
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -206,19 +191,13 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
     delete:
       description: Edit a movement
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
+        - $ref: '#/components/parameters/movement_id'
       produces:
         - application/json
       responses:
@@ -230,28 +209,17 @@ paths:
           $ref: '#/components/responses/403'
         404:
           $ref: '#/components/responses/404'
-
-################################################################################
+# ------------------------------------------------------------------------------
   /movements/{movement_id}/exercises/{exercise_id}:
-################################################################################
+# ------------------------------------------------------------------------------
     put:
       description: Add an exercise to a movement type
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/movement_id'
+        - $ref: '#/components/parameters/exercise_id'
       produces:
         - application/json
       responses:
@@ -263,25 +231,14 @@ paths:
           $ref: '#/components/responses/403'
         404:
           $ref: '#/components/responses/404'
-################################################################################
     delete:
       description: Remove an exercise from a movement type association
       tags: [Movements]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: movement_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the movement
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/movement_id'
+        - $ref: '#/components/parameters/exercise_id'
       produces:
         - application/json
       responses:
@@ -293,9 +250,9 @@ paths:
           $ref: '#/components/responses/403'
         404:
           $ref: '#/components/responses/404'
-################################################################################
+# ------------------------------------------------------------------------------
   /exercises:
-################################################################################
+# ------------------------------------------------------------------------------
     get:
       description: Get all exercises created by the authenticated user
       tags: [Exercises]
@@ -328,7 +285,6 @@ paths:
           $ref: '#/components/responses/401'
         406:
           $ref: '#/components/responses/406'
-################################################################################
     post:
       description: Add an exercise to the database
       tags: [Exercises]
@@ -347,7 +303,7 @@ paths:
           description: Created
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -360,21 +316,16 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
+# ------------------------------------------------------------------------------
   /exercises/{exercise_id}:
-################################################################################
+# ------------------------------------------------------------------------------
     get:
       description: Get an exercise by ID
       tags: [Exercises]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/exercise_id'
       produces:
         - application/json
       responses:
@@ -392,19 +343,13 @@ paths:
           $ref: '#/components/responses/403'
         406:
           $ref: '#/components/responses/406'
-################################################################################
     put:
       description: Edit an exercise - all properties required
       tags: [Exercises]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/exercise_id'
       requestBody:
         required: true
         content:
@@ -418,7 +363,7 @@ paths:
           description: OK
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -437,19 +382,13 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
     patch:
       description: Edit an exercise
       tags: [Exercises]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/exercise_id'
       requestBody:
         content:
           application/json:
@@ -462,7 +401,7 @@ paths:
           description: OK
           headers:
             Location:
-              $ref: '#/components/examples/self'
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -479,19 +418,13 @@ paths:
           $ref: '#/components/responses/406'
         415:
           $ref: '#/components/responses/415'
-################################################################################
     delete:
       description: Edit an exercise
       tags: [Exercises]
       security:
         - BearerAuth: []
       parameters:
-        - in: path
-          name: exercise_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the exercise
+        - $ref: '#/components/parameters/exercise_id'
       produces:
         - application/json
       responses:

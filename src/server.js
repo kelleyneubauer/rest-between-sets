@@ -2,6 +2,9 @@
  * server.js
  * 
  * Kelley Neubauer - kelley@kelleyneubauer.com
+ * 
+ * Entry point for node.js app
+ * Configures Express middleware and starts server
  */
 
 'use strict';

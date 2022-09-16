@@ -40,4 +40,4 @@ router.post('/users', function(req, res) {
 	res.status(405).json({ Error: 'Method Not Allowed' });
 });
 
- module.exports = router;
+module.exports = router;

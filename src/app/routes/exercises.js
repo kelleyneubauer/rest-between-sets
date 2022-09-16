@@ -93,7 +93,7 @@ router.get('/exercises', checkJwt, async function(req, res) {
  * 
  * Retrieve an exercise
  */
- router.get('/exercises/:exercise_id', checkJwt, async function(req, res) {
+router.get('/exercises/:exercise_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else {
@@ -126,7 +126,7 @@ router.get('/exercises', checkJwt, async function(req, res) {
  * 
  * Edit an exercise
  */
- router.put('/exercises/:exercise_id', checkJwt, async function(req, res) {
+router.put('/exercises/:exercise_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else if (req.get('content-type') !== 'application/json') {
@@ -169,7 +169,7 @@ router.get('/exercises', checkJwt, async function(req, res) {
  * 
  * Edit an exercise
  */
- router.patch('/exercises/:exercise_id', checkJwt, async function(req, res) {
+router.patch('/exercises/:exercise_id', checkJwt, async function(req, res) {
     if (!req.accepts(['application/json'])) {
         res.status(406).json({ Error: 'Not Acceptable' });
     } else if (req.get('content-type') !== 'application/json') {
@@ -207,7 +207,7 @@ router.get('/exercises', checkJwt, async function(req, res) {
  * 
  * Delete a exercise
  */
- router.delete('/exercises/:exercise_id', checkJwt, async function(req, res) {
+router.delete('/exercises/:exercise_id', checkJwt, async function(req, res) {
     try {
         const exerciseId = parseInt(req.params.exercise_id);
         const exercise = await model.getExercise(exerciseId);
@@ -234,4 +234,4 @@ router.get('/exercises', checkJwt, async function(req, res) {
     }
 });
 
- module.exports = router;
+module.exports = router;

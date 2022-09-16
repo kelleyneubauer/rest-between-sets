@@ -2,6 +2,8 @@
  * swagger-config.js
  * 
  * Kelley Neubauer - kelley@kelleyneubauer.com
+ * 
+ * Options for Swagger JS doc which is used to create Swagger UI
  */
 
  const swaggerJsdoc = require('swagger-jsdoc');
@@ -16,11 +18,11 @@
 	  },
 	  servers: [
 		  {
-			  url: 'http://www.prod.com',
+			  url: process.env.BASE_URL,
 			  description: 'Production server',
 		  },
 		  {
-			url: 'http://localhost:8080',
+			url: process.env.BASE_URL_LOCAL,
 			description: 'Development server',
 		  },
 		],

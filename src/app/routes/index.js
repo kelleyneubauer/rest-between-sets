@@ -19,7 +19,7 @@ router.use('/', require('./exercises'));
  * 
  * Landing page
  */
- router.get('/', async function(req, res) {
+router.get('/', async function(req, res) {
     const url = `${req.protocol}://${req.get('host')}`;
     if (req.oidc.isAuthenticated()) {
         const users = await model.getUsers();

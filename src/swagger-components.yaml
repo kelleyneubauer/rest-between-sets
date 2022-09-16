@@ -1,6 +1,10 @@
+# swagger-paths.yaml
+# Kelley Neubauer - kelley@kelleyneubauer.com
+
 components:
-################################################################################
+# ------------------------------------------------------------------------------
   schemas:
+# ------------------------------------------------------------------------------
     Users:
       type: object
       properties:
@@ -12,6 +16,7 @@ components:
           $ref: '#/components/examples/jwtsub'
         creted_at:
           $ref: '#/components/examples/datetime'
+  # ----------
     Exercises:
       type: object
       properties:
@@ -35,6 +40,7 @@ components:
           $ref: '#/components/examples/jwtsub'
         created_at:
           $ref: '#/components/examples/datetime'
+  # ----------
     Movements:
       type: object
       properties:
@@ -52,19 +58,33 @@ components:
           $ref: '#/components/examples/jwtsub'
         created_at:
           $ref: '#/components/examples/datetime'
-################################################################################
-  # Reusable path, query, header and cookie parameters
+# ------------------------------------------------------------------------------
   parameters:
-################################################################################
-  # Security scheme definitions (see Authentication)
+# ------------------------------------------------------------------------------
+    movement_id:
+      in: path
+      name: movement_id
+      schema:
+        type: integer
+      required: true
+      description: Numeric ID of the movement
+    exercise_id:
+      in: path
+      name: exercise_id
+      schema:
+        type: integer
+      required: true
+      description: Numeric ID of the exercise
+# ------------------------------------------------------------------------------
   securitySchemes:
+# ------------------------------------------------------------------------------
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-################################################################################
-  # Reusable request bodies
+# ------------------------------------------------------------------------------
   requestBodies:
+# ------------------------------------------------------------------------------
     movement:
       type: object
       properties:
@@ -85,9 +105,9 @@ components:
           type: array
           items:
             $ref: '#/components/examples/url'
-################################################################################
-  # Reusable responses, such as 401 Unauthorized or 400 Bad Request
+# ------------------------------------------------------------------------------
   responses:
+# ------------------------------------------------------------------------------
     self:
       type: object
       properties:
@@ -107,12 +127,14 @@ components:
       description: Not Acceptable
     415:
       description: Unsupported Media Type
-################################################################################
-  # Reusable response headers
+# ------------------------------------------------------------------------------
   headers:
-################################################################################
-  # Reusable examples
+# ------------------------------------------------------------------------------
+    Location:
+      $ref: '#/components/examples/self'
+# ------------------------------------------------------------------------------
   examples:
+# ------------------------------------------------------------------------------
     email: 
       type: string
       example: email@domain.com
@@ -145,11 +167,3 @@ components:
       type: string
       example: 'http://www.api.com/next-page'
       description: 'Link to next page of results'
-
-################################################################################
-  # Reusable links
-  links:
-
-################################################################################
-  # Reusable callbacks
-  callbacks:
