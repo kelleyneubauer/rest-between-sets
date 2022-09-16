@@ -1,6 +1,8 @@
 # REST Between Sets
 [REST Between Sets](http://www.restbetweensets.com) is a RESTful API for an exercise library that allows users to contribute to a shared database.
 
+<img src="img/rest-between-sets-api.png" width="600">
+
 The API supports CRUD operations for two entities: Exercises and Movements. 
 
 - Exercises are various physical activities i.e. Barbell Back Squat. 
@@ -14,5 +16,3 @@ The API supports CRUD operations for two entities: Exercises and Movements.
   - Or simply use the [Swagger UI](http://restbetweensets.com/api) with your \<JWT\> for authorization.
 
 Visit [http://restbetweensets.com/api](http://restbetweensets.com/api) for documentation and usage.
-
-<img src="img/rest-between-sets-api.png" width="600">
