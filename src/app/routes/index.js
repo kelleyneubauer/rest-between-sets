@@ -9,6 +9,7 @@
 const express = require('express');
 const router = express.Router();
 const model = require('../models/model');
+const { getTimestamp } = require('../service/helpers');
 
 router.use('/', require('./users'));
 router.use('/', require('./movements'));
@@ -49,7 +50,7 @@ router.get('/', async function(req, res) {
         .status(200)
         .render('home', {
             title_text: "REST Between Sets",
-            text: "Sign in to get your JWT and access the API",
+            text: "Sign in to get your JWT for API access",
             url_text: "Login",
             url: `${url}/login`
         });

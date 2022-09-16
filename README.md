@@ -1,17 +1,18 @@
 # REST Between Sets
-An exercise library API
+[REST Between Sets](http://www.restbetweensets.com) is a RESTful API for an exercise library that allows users to contribute to a shared database.
 
-<img src="/img/minesweeper_gameplay_ai_demo.gif" width="400">
+The API supports CRUD operations for two entities: Exercises and Movements. 
 
-[Play on repli.it!](https://repl.it/@kelleyneubauer/minesweeper)
+- Exercises are various physical activities i.e. Barbell Back Squat. 
+- Movements are used to categorize exercises into broad movement categories i.e. Squat.
+- Exercises & Movements can be viewed by all users but can only modified by the creating user.
 
-## Using the API
-- visit: link
-- login to get JWT bearer token and make requests
-- visit UI: link foor API 
-  - includes Auth, just paste JWT
+<u>How to use:</u>
 
-## Running Locally
-- clone
-- .env
-- change variable
+- Register at [restbetweensets.com](http://restbetweensets.com) and sign in to get a JWT.
+- Make HTTP requests with the Authorization header set to "Bearer \<JWT\>".
+  - Or simply use the [Swagger UI](http://restbetweensets.com/api) with your \<JWT\> for authorization.
+
+Visit [http://restbetweensets.com/api](http://restbetweensets.com/api) for documentation and usage.
+
+<img src="img/rest-between-sets-api.png" width="600">

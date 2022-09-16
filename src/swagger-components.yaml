@@ -5,18 +5,6 @@ components:
 # ------------------------------------------------------------------------------
   schemas:
 # ------------------------------------------------------------------------------
-    Users:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/examples/datastoreid'
-        user_email:
-          $ref: '#/components/examples/email'
-        user_id:
-          $ref: '#/components/examples/jwtsub'
-        creted_at:
-          $ref: '#/components/examples/datetime'
-  # ----------
     Exercises:
       type: object
       properties:
@@ -57,6 +45,18 @@ components:
         created_by:
           $ref: '#/components/examples/jwtsub'
         created_at:
+          $ref: '#/components/examples/datetime'
+  # ----------
+    Users:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/examples/datastoreid'
+        user_email:
+          $ref: '#/components/examples/email'
+        user_id:
+          $ref: '#/components/examples/jwtsub'
+        creted_at:
           $ref: '#/components/examples/datetime'
 # ------------------------------------------------------------------------------
   parameters:
