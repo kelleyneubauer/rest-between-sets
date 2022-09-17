@@ -1,0 +1,5557 @@
+{
+	"info": {
+		"_postman_id": "4933fdd3-cfc3-4583-92c0-1cacbe1f3ee8",
+		"name": "rest-between-sets-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16596500"
+	},
+	"item": [
+		{
+			"name": "get users 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get users 406 text/html",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post users 405",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method Not Allowed\");",
+							"});",
+							"",
+							"pm.test(\"Allow header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Allow')).to.eq('GET');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"created_at\": \"2022-06-04T20:44:26.817Z\",\n    \"user_id\": \"auth0|627dacfecd06b80069190ff9\",\n    \"user_email\": \"neubauek@oregonstate.edu\",\n    \"id\": 5631671361601536\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_1\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Gait / Other\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Walking pattern.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Gait / Other\",\n    \"coaching_tips\": \"Walking pattern.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1 (2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_2\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Horizontal Push\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Neutral spine.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Horizontal Push\",\n    \"coaching_tips\": \"Neutral spine.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1 (3)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_3\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Horizontal Pull\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Back flat.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Horizontal Pull\",\n    \"coaching_tips\": \"Back flat.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1 (4)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_4\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Vertical Push\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Ribs low.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Vertical Push\",\n    \"coaching_tips\": \"Ribs low.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1 (5)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_5\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Vertical Pull\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Ribs low.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Vertical Pull\",\n    \"coaching_tips\": \"Ribs low.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_1 (6)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_movement_id_6\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Lunge / Step\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Running mechanics.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge / Step\",\n    \"coaching_tips\": \"Running mechanics.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 201 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_2_movement_id_1\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Hinge\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Vertical shins. Neutral spine.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id2\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Hinge\",\n    \"coaching_tips\": \"Vertical shins. Neutral spine.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_invalid}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Vertical Pull\",\n    \"coaching_tips\": \"Ribs low.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 406 text/html user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Vertical Pull\",\n    \"coaching_tips\": \"Ribs low.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post movements 415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"415 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Gait / Other\",\n    \"coaching_tips\": \"Walking pattern.\"\n}",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movements 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"movements\"].length).is.at.most(5);",
+							"",
+							"    pm.response.json()[\"movements\"].forEach((exercise) => {",
+							"        pm.expect(exercise.created_by).to.eq(pm.environment.get(\"user_id1\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movements 200 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"movements\"].length).is.at.most(5);",
+							"    ",
+							"    pm.response.json()[\"movements\"].forEach((exercise) => {",
+							"        pm.expect(exercise.created_by).to.eq(pm.environment.get(\"user_id2\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movements 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movements 406 text/html",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Gait / Other\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Walking pattern.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 401 no auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Invalid Token\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 403 user_1 not authorized",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 403 user_1 invalid movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 406 text/html user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 200 user_1 movement_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Lunge\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Feet shoulder width apart. Knees over toes.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"415 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Lunge\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 200 user_1 movement_1 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Squat\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Feet shoulder width apart. Knees over toes.');",
+							"    pm.expect(pm.response.json()[\"exercises\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_invalid}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"415 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\"\n}",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 201 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_exercise_id_1\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"DB Bench Press\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/C7Te-IyY53o');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.include('google.com');",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"DB Bench Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\"],\n    \"reference_links\": [\"google.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 201 user_1 (2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_1_exercise_id_2\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"DB Bent Row\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/PDUUeyEdCwc');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"DB Bent Row\",\n    \"video_links\": [\"https://youtu.be/PDUUeyEdCwc\"],\n    \"reference_links\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 201 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"user_2_exercise_id_1\", pm.response.json()[\"id\"]);",
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"DB Deadlift\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/s9jDULFI7ag','https://youtu.be/oIirnwjG1Fw');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id2\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.test(\"location header is valid\", function () {",
+							"   pm.expect(pm.response.headers.get('Location')).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"DB Deadlift\",\n    \"video_links\": [\"https://youtu.be/s9jDULFI7ag\"],\n    \"reference_links\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 401 no auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Invalid Token\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 406 text/html user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post exercises 415 text/html content",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Unsupported Media Type\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": []\n}",
+					"options": {
+						"raw": {
+							"language": "html"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercises 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"exercises\"].length).is.at.most(5);",
+							"",
+							"    pm.response.json()[\"exercises\"].forEach((exercise) => {",
+							"        pm.expect(exercise.created_by).to.eq(pm.environment.get(\"user_id1\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercises 200 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"exercises\"].length).is.at.most(5);",
+							"    ",
+							"    pm.response.json()[\"exercises\"].forEach((exercise) => {",
+							"        pm.expect(exercise.created_by).to.eq(pm.environment.get(\"user_id2\"));",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercises 401 bad auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Invalid Token\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_invalid}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercises 406 text/html",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/exercises",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 200 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"DB Deadlift\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/s9jDULFI7ag','https://youtu.be/oIirnwjG1Fw');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id2\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_2_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_2_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 401 no auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Invalid Token\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 403 user_2 not authorized",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 403 user_1 invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{movement_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{movement_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 406 text/html user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 200 user_1 exercise_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"Barbell Press\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/C7Te-IyY53o','https://youtu.be/oIirnwjG1Fw');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.include('bing.com');",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_2_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_2_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{exercise_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{exercise_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"415 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Press\",\n    \"video_links\": [\"https://youtu.be/C7Te-IyY53o\",\"https://youtu.be/oIirnwjG1Fw\"],\n    \"reference_links\": [\"bing.com\"]\n}",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch 200 user_1 exercise_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"Barbell Bench Press\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/C7Te-IyY53o','https://youtu.be/oIirnwjG1Fw');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.include('https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips');",
+							"    pm.expect(pm.response.json()[\"movements\"]).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_2_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_2_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{exercise_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{exercise_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"415 status code\", function () {",
+							"    pm.response.to.have.status(415);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"exercise_name\": \"Barbell Bench Press\",\n    \"reference_links\": [\"https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips\"]\n}",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 204 user_1 assign exercise to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 204 user_1 assign exercise to movement (2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 204 user_1 assign exercise (2) to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{user_1_exercise_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 204 user_1 assign exercise (2) to movement_3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_3}}/exercises/{{user_1_exercise_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_3}}",
+						"exercises",
+						"{{user_1_exercise_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_invalid}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 403 user_1 assign exercise to no auth movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 403 user_1 assign no auth exercise to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{user_2_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{user_2_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put 404 user_1 bad exercise to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{exercise_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{exercise_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"exercises\"].length).to.eq(2);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete 204 user_1 assign exercise to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"exercises\"].length).to.eq(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise 200 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"movements\"].length).to.eq(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete 403 user_1 assign exercise to no auth movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete 403 user_1 assign no auth exercise to movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete 404 user_1 not associated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}",
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete 404 user_1 bad exercise to bad movement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movement_name\": \"Squat\",\n    \"coaching_tips\": \"Feet shoulder width apart. Knees over toes.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{movement_id_invalid}}/exercises/{{exercise_id_invalid}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{movement_id_invalid}}",
+						"exercises",
+						"{{exercise_id_invalid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_2 403 user_1 wrong auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_2 401 user_1 bad auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_invalid}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_2 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_2 404 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement_2  403 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise_1  user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/exercises/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'exercise_name', 'video_links', 'reference_links', 'movements', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"exercise_name\"]).to.eq(\"Barbell Bench Press\");",
+							"    pm.expect(pm.response.json()[\"video_links\"]).to.include('https://youtu.be/C7Te-IyY53o','https://youtu.be/oIirnwjG1Fw');",
+							"    pm.expect(pm.response.json()[\"reference_links\"]).to.include('https://www.coachmag.co.uk/exercises/chest-exercises/186/bench-press-technique-tips');",
+							"    pm.expect(pm.response.json()[\"movements\"].length).to.eq(0);",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete exercise_2 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get exercise_2 403 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get movement_3  user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const self_url = pm.environment.get(\"app_url\") + \"/movements/\" + pm.response.json()[\"id\"];",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()).to.contain.all.keys('id', 'movement_name', 'coaching_tips', 'exercises', 'created_by', 'created_at');",
+							"",
+							"    pm.expect(pm.response.json()[\"movement_name\"]).to.eq(\"Horizontal Pull\");",
+							"    pm.expect(pm.response.json()[\"coaching_tips\"]).to.eq('Back flat.');",
+							"    pm.expect(pm.response.json()[\"exercises\"].length).to.eq(0);",
+							"    pm.expect(pm.response.json()[\"created_by\"]).to.eq(pm.environment.get(\"user_id1\"));",
+							"    //Check if the self url is correct",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_3}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_1 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_3 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_3}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_4 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_4}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_5 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_5}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_5}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_6 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_1_movement_id_6}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_1_movement_id_6}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete movement_1 204 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/movements/{{user_2_movement_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"movements",
+						"{{user_2_movement_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete exercise_1 204 user_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_1_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_1_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete exercise_1 204 user_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/exercises/{{user_2_exercise_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"exercises",
+						"{{user_2_exercise_id_1}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt1}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

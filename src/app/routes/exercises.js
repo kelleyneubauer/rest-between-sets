@@ -133,7 +133,7 @@ router.put('/exercises/:exercise_id', checkJwt, async function(req, res) {
         res.status(415).json({ Error: 'Unsupported Media Type' });
     } else {
         try {
-            if (Object.keys(req.body).length !== 3 || !('exercise_name' in req.body && 'video_links' in req.body && 'rerference_links' in req.body)) {
+            if (Object.keys(req.body).length !== 3 || !('exercise_name' in req.body && 'video_links' in req.body && 'reference_links' in req.body)) {
                 throw new Error('Bad Request');
             }
             const exerciseId = parseInt(req.params.exercise_id);
