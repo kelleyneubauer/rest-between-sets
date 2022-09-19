@@ -1,5 +1,5 @@
 # REST Between Sets
-[REST Between Sets](http://www.restbetweensets.com) is a RESTful API for an exercise library that allows users to contribute to a shared database.
+REST Between Sets ([Login](http://www.restbetweensets.com), [API](http://www.restbetweensets.com/API)) is a RESTful API for an exercise library that allows users to contribute to a shared database.
 
 <img src="img/rest-between-sets-api.png" width="600">
 
