@@ -1,5 +1,5 @@
 # REST Between Sets
-REST Between Sets ([Login](http://www.restbetweensets.com), [API](http://www.restbetweensets.com/API)) is a RESTful API for an exercise library that allows users to contribute to a shared database.
+REST Between Sets ([Login](http://www.restbetweensets.com), [API](http://www.restbetweensets.com/API)) is a RESTful API for an exercise library.
 
 <img src="img/rest-between-sets-api.png" width="600">
 
@@ -7,7 +7,7 @@ The API supports CRUD operations for two entities: Exercises and Movements.
 
 - Exercises are various physical activities i.e. Barbell Back Squat. 
 - Movements are used to categorize exercises into broad movement categories i.e. Squat.
-- Exercises & Movements can be viewed by all users but can only modified by the creating user.
+- Exercises & Movements can only be viewed & edited by the creating user.
 
 <u>How to use:</u>
 
