@@ -1,5 +1,10 @@
 # REST Between Sets
-REST Between Sets ([Login](http://www.restbetweensets.com), [API](http://www.restbetweensets.com/API)) is a RESTful API for an exercise library.
+
+<i>Rest Between Sets is no longer live</i>
+
+---
+
+REST Between Sets (~~[Login](http://www.restbetweensets.com)~~, ~~[API](http://www.restbetweensets.com/API)~~) is a RESTful API for an exercise library.
 
 <img src="img/rest-between-sets-api.png" width="600">
 
@@ -11,8 +16,8 @@ The API supports CRUD operations for two entities: Exercises and Movements.
 
 <u>How to use:</u>
 
-- Register at [restbetweensets.com](http://restbetweensets.com) and sign in to get a JWT.
+- Register at ~~[restbetweensets.com](http://restbetweensets.com)~~ and sign in to get a JWT.
 - Make HTTP requests with the Authorization header set to "Bearer \<JWT\>".
-  - Or simply use the [Swagger UI](http://restbetweensets.com/api) with your \<JWT\> for authorization.
+  - Or simply use the ~~[Swagger UI](http://restbetweensets.com/api)~~ with your \<JWT\> for authorization.
 
-Visit [http://restbetweensets.com/api](http://restbetweensets.com/api) for documentation and usage.
+Visit ~~[http://restbetweensets.com/api](http://restbetweensets.com/api)~~ for documentation and usage.
